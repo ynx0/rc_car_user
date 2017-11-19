@@ -1,0 +1,20 @@
+is just a hex value but,
+
+0x<CC><V1><V2><Vn...>
+
+for instance:
+forward command is 0x01; there is one param, speed, max speed theoretically can only be 100 (100%), and a 2 digit hex value can hold max FF -> 255 -> 1 byte
+so, the packet would look like this;
+
+forward(30) => 0x01 0x1E 0x00 0x00 => 0x011E0000
+                 |   |     |    |
+command hex -----|   |     |----|
+                     |     |
+param value (30) ----|     |
+                           |
+null value because no param|
+
+Packets will always be max 8 digits long for now
+
+Packets can be optimal length, as parser will discard any bytes longer than expected length of packet after reading command
+So, 0x011E0000 can be shortened to 0x011E
