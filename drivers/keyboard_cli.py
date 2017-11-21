@@ -1,3 +1,5 @@
+import sys
+sys.path.append('../')
 from RC_Commands import Commands
 import msvcrt
 from procbridge.procbridge import *
@@ -20,20 +22,28 @@ def start():
     print("'s' to stop")
     print("'e' to exit")
 
-    host = '192.168.0.124'
+    host = '192.168.0.125'
     port = 9939
     client = ProcBridge(host, port)
 
+    #ping_assert(client)
+
     while True:
         key = msvcrt.getch()
-
+        print('key:' + str(key))
+        
         if key == b's':
-            client.request(Commands.STOP, {})
+            try:
+                client.request(Commands.STOP, {})
+            except TimeoutError:
+                print('Error, server is not available')
+
         elif key == b'e':
-            client.request(Commands.SHUTDOWN, {})
-        elif key == b'\x0e':
+            print('shutting donw ...llol')
+            #client.request(Commands.SHUTDOWN, {})
+        elif key == b'\xe0':
             # this means arrow key
-            arrow = int.from_bytes(msvcrt.getch())
+            arrow = int.from_bytes(msvcrt.getch(), 'little')
             if arrow == Arrows.RIGHT:
                 client.request(Commands.RIGHT)
             elif arrow == Arrows.LEFT:
@@ -46,6 +56,14 @@ def start():
                 print("Unknown arrow/keycode" + str(arrow))
         else:
             pass
+
+def ping_assert(client):
+    try:
+        client.request('ping', {})
+    except TimeoutError:
+        print('Error: server on car is not up')
+        print('Exitting')
+        sys.exit(-1)
 
 if __name__ == '__main__':
     start()
