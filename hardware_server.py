@@ -1,11 +1,14 @@
 from procbridge.procbridge import *
+import sys
+sys.path.append('./rc_car/')
 from rc_car import motor_controller as mc
 from RC_Commands import Commands
-import sys
 
 
-localhost = '127.0.0.1'
-port = 2323
+
+host = [l for l in ([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [[(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0]
+
+port = 9939
 
 
 def movement_handler(command, args):
@@ -30,7 +33,7 @@ def movement_handler(command, args):
     else:
         print("Error: Unknown command: " + command)
 
-server = ProcBridgeServer(localhost, port, movement_handler)
+server = ProcBridgeServer(host, port, movement_handler)
 
 def start():
     mc.setup()
