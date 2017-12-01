@@ -11,12 +11,15 @@ client = ProcBridge(host, port)
 class MoveHandler(object):
 
     def on_post(self, req, resp):
-        cmd = req.params[0]
-        p1 = req.params[1]
+        print('=============')
+        print('params: %s' % req.params)
+        params = list(req.params)
+        cmd = params[0]
+        p1 = params[1]
         print('cmd is: %s' % cmd)
         print('param1 is: %s' % p1)
         try:
-            client.request(cmd, p1)
+            #client.request(cmd, p1)
             resp.status = falcon.HTTP_200
             resp.body = 'Command received: cmd: %s' % (cmd)
         except TimeoutError:
@@ -31,12 +34,17 @@ class MoveHandler(object):
 
 
 app = falcon.API()
+app.req_options.auto_parse_form_urlencoded = True
+app.add_route('/move', MoveHandler())
 
-def start():
-    app.add_route('/move', MoveHandler)
-
-if __name__ == '__main__':
-    try:
-        start()
-    except KeyboardInterrupt:
-        print("Stopping webserver")
+#
+# def start():
+#     app.add_route('/move', MoveHandler)
+#     while True:
+#         pass
+#
+# if __name__ == '__main__':
+#     try:
+#         start()
+#     except KeyboardInterrupt:
+#         print("Stopping webserver")
