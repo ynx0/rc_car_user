@@ -3,7 +3,7 @@ sys.path.append('../')
 from RC_Commands import Commands
 import msvcrt
 from procbridge.procbridge import *
-
+import sys
 
 
 
@@ -14,7 +14,7 @@ class Arrows():
     UP = 72
     DOWN = 80
 
-DEFAULT_SPEED = 50
+SPEED = DEFAULT_SPEED = 50
 
 def start():
     print("Starting driver: " + __file__)
@@ -26,11 +26,14 @@ def start():
     port = 9939
     client = ProcBridge(host, port)
 
+    if len(sys.argv) > 0:
+        SPEED = int(sys.argv[1])
+
     #ping_assert(client)
 
     while True:
         key = msvcrt.getch()
-        print('key:' + str(key))
+        #print('key:' + str(key))
         
         if key == b's':
             client.request(Commands.STOP, {})
@@ -43,12 +46,14 @@ def start():
             arrow = int.from_bytes(msvcrt.getch(), 'little')
             if arrow == Arrows.RIGHT:
                 client.request(Commands.RIGHT)
+                print('Turning Right')
             elif arrow == Arrows.LEFT:
                 client.request(Commands.LEFT)
+                print('Turning Left')
             elif arrow == Arrows.UP:
-                client.request(Commands.FORWARD, {"speed": DEFAULT_SPEED})
+                client.request(Commands.FORWARD, {"speed": SPEED})
             elif arrow == Arrows.DOWN:
-                client.request(Commands.BACKWARD, {"speed" : DEFAULT_SPEED})
+                client.request(Commands.BACKWARD, {"speed" : SPEED})
             else:
                 print("Unknown arrow/keycode" + str(arrow))
         else:
