@@ -14,7 +14,7 @@ class Arrows():
     UP = 72
     DOWN = 80
 
-DEFAULT_SPEED = 35
+DEFAULT_SPEED = 50
 
 def start():
     print("Starting driver: " + __file__)
@@ -33,14 +33,11 @@ def start():
         print('key:' + str(key))
         
         if key == b's':
-            try:
-                client.request(Commands.STOP, {})
-            except TimeoutError:
-                print('Error, server is not available')
-
-        elif key == b'e':
-            print('shutting donw ...llol')
-            #client.request(Commands.SHUTDOWN, {})
+            client.request(Commands.STOP, {})
+        elif key == b'e' or key == b'\x03' or key == '\x1b':
+            print('shutting down ...')
+            client.request(Commands.SHUTDOWN, {})
+            sys.exit(0)
         elif key == b'\xe0':
             # this means arrow key
             arrow = int.from_bytes(msvcrt.getch(), 'little')

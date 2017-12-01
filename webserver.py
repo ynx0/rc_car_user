@@ -1,34 +1,39 @@
-from bottle import *
+import falcon
 from procbridge.procbridge import *
 
 # MARK - hardware_server procbridge settings
-host = '127.0.0.1' # TODO - put correct ip of pi
-port = 9939
+host = '192.168.0.125' # put correct ip of pi
+port = 9009
 client = ProcBridge(host, port)
 
-# MARK - Bottle http server code
-app = Bottle()
+# MARK - falcon server handler code
+
+class MoveHandler(object):
+
+    def on_post(self, req, resp):
+        cmd = req.params[0]
+        p1 = req.params[1]
+        print('cmd is: %s' % cmd)
+        print('param1 is: %s' % p1)
+        try:
+            client.request(cmd, p1)
+            resp.status = falcon.HTTP_200
+            resp.body = 'Command received: cmd: %s' % (cmd)
+        except TimeoutError:
+            resp.status = falcon.HTTP_500
 
 
-@app.post('/move')
-def handle_web_command():
-    print("Post from: " + str(request.remote_addr))
-    cmd = request.forms.get('cmd')
-    param1 = request.forms.get('p1')
-    success = "OK"
+    # try:
+    #     client.request(cmd, param1)
+    # except Exception as e:
+    #     success = "Failed: " + str(e)
 
-    print("CMD: %s" % str(cmd))
-    print("param1: %s" % str(param1))
 
-    try:
-        client.request(cmd, param1)
-    except Exception as e:
-        success = "Failed: " + str(e)
 
-    return success
+app = falcon.API()
 
 def start():
-    app.run()
+    app.add_route('/move', MoveHandler)
 
 if __name__ == '__main__':
     try:
