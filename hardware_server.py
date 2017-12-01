@@ -30,6 +30,8 @@ def movement_handler(command, args):
         mc.cleanup()
         server.stop()
         sys.exit(0)
+    elif command == Commands.CHGFREQ:
+        mc.changeRearFreq(args['freq'])
     else:
         print("Error: Unknown command: " + command)
 

@@ -5,3 +5,4 @@ class Commands:
     RIGHT = 'right'
     STOP = 'stop'
     SHUTDOWN = 'shutdown'
+    CHGFREQ = 'chgfreq'

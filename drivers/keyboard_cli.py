@@ -14,7 +14,11 @@ class Arrows():
     UP = 72
     DOWN = 80
 
+
+
 SPEED = DEFAULT_SPEED = 50
+FREQ = DEFAULT_FREQ = 20
+
 
 def start():
     print("Starting driver: " + __file__)
@@ -56,6 +60,35 @@ def start():
                 client.request(Commands.BACKWARD, {"speed" : SPEED})
             else:
                 print("Unknown arrow/keycode" + str(arrow))
+        elif key == b'\x00': #function key
+            pad = 58
+            fn = int.from_bytes(msvcrt.getch(), 'little') - pad
+            if fn == 1:
+                SPEED = 40
+                FREQ = 15
+
+            elif fn == 2:
+                SPEED = 40
+                FREQ = 25
+
+            elif fn == 3:
+                SPEED = 75
+                FREQ = 30
+
+            elif fn == 4:
+                SPEED = 100
+                FREQ = 30
+
+            elif fn == 5:
+                SPEED = 100
+                FREQ = 50
+            else:
+                pass
+
+            client.request(Commands.CHGFREQ, {"freq": FREQ})
+            client.request(Commands.FORWARD, {"speed": SPEED})
+            print("Speed set to: " + str(SPEED))
+
         else:
             pass
 
