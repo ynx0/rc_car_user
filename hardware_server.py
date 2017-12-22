@@ -1,6 +1,6 @@
 from procbridge.procbridge import *
 import sys
-sys.path.append('./rc_car/')
+sys.path.append('./rc_car/') # hacks; no good
 from rc_car import motor_controller as mc
 from RC_Commands import Commands
 
